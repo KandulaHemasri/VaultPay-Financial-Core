@@ -374,7 +374,40 @@ function renderInvoicesList(invoices) {
     card.className = 'invoice-card';
     
     const isPaid = inv.status === 'paid';
+    const isAdmin = activeClient?.role === 'admin';
     
+    let buttonsHtml = '';
+    if (isAdmin) {
+      if (isPaid) {
+        buttonsHtml = `
+          <button class="btn btn-download btn-sm" onclick="downloadInvoicePdf('${inv.id}')">
+            \u{1F4E5} Download PDF
+          </button>
+        `;
+      } else {
+        buttonsHtml = ''; // Just show status unpaid, don't show pay and download button
+      }
+    } else {
+      if (isPaid) {
+        buttonsHtml = `
+          <button class="btn btn-download btn-sm" onclick="downloadInvoicePdf('${inv.id}')">
+            \u{1F4E5} Download PDF
+          </button>
+        `;
+      } else {
+        buttonsHtml = `
+          <div class="btn-group-row" style="margin-top: 0; gap: 0.5rem;">
+            <button class="btn btn-download btn-sm" onclick="downloadInvoicePdf('${inv.id}')">
+              \u{1F4E5} PDF
+            </button>
+            <button class="btn btn-cyan btn-sm" style="background-color: var(--cyan); color: #000;" onclick="openStripeCheckout('${inv.id}', '${inv.description.replace(/'/g, "\\'")}', ${inv.amount}, '${inv.stripeInvoiceId}')">
+              \u{1F4B3} Pay
+            </button>
+          </div>
+        `;
+      }
+    }
+
     card.innerHTML = `
       <div class="inv-main">
         <div class="inv-header-row">
@@ -386,20 +419,7 @@ function renderInvoicesList(invoices) {
       </div>
       <div class="inv-pricing">
         <span class="inv-amount">$${inv.amount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
-        ${isPaid ? `
-          <button class="btn btn-download btn-sm" onclick="downloadInvoicePdf('${inv.id}')">
-            \u{1F4E5} Download PDF
-          </button>
-        ` : `
-          <div class="btn-group-row" style="margin-top: 0; gap: 0.5rem;">
-            <button class="btn btn-download btn-sm" onclick="downloadInvoicePdf('${inv.id}')">
-              \u{1F4E5} PDF
-            </button>
-            <button class="btn btn-cyan btn-sm" style="background-color: var(--cyan); color: #000;" onclick="openStripeCheckout('${inv.id}', '${inv.description.replace(/'/g, "\\'")}', ${inv.amount}, '${inv.stripeInvoiceId}')">
-              \u{1F4B3} Pay
-            </button>
-          </div>
-        `}
+        ${buttonsHtml}
       </div>
     `;
     invoicesList.appendChild(card);
