@@ -171,19 +171,19 @@
         </div>
 
         <!-- Stripe Webhooks Server simulator -->
-        <div class="card glass-card">
+        <div class="card glass-card" id="stripeWebhookEmulatorCard">
           <h2 class="card-title text-cyan">3. Stripe Webhook Server Emulator</h2>
           <p class="card-desc">Simulate a server-to-server webhook event directly to our secure `/api/webhooks/stripe` gateway.</p>
           
           <div class="webhook-actions">
-            <div class="webhook-item">
+            <div class="webhook-item" id="webhookItemApex">
               <div class="webhook-meta">
                 <span class="webhook-target">Invoice <b>inv_902</b> (Apex Corp)</span>
                 <span class="webhook-val">$4,200.50</span>
               </div>
               <button id="btnSimulateWebhookApex" class="btn btn-cyan btn-sm">Simulate Payment Success</button>
             </div>
-            <div class="webhook-item">
+            <div class="webhook-item" id="webhookItemBeta">
               <div class="webhook-meta">
                 <span class="webhook-target">Invoice <b>inv_904</b> (Beta Solutions)</span>
                 <span class="webhook-val">$9,800.00</span>
@@ -218,7 +218,7 @@
         </div>
 
         <!-- Webhook Event Auditing Stream -->
-        <div class="card glass-card">
+        <div class="card glass-card" id="webhookAuditingCard">
           <div class="card-header-split">
             <h2 class="card-title text-violet">Live Webhook Auditing Stream</h2>
             <button id="btnRefreshLogs" class="btn btn-refresh" title="Reload Logs">&#x1F504;</button>

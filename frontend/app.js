@@ -40,6 +40,7 @@ const securityBadge = document.getElementById('securityBadge');
 const securityBadgeText = document.getElementById('securityBadgeText');
 
 const adminPanelCard = document.getElementById('adminPanelCard');
+const webhookAuditingCard = document.getElementById('webhookAuditingCard');
 const createInvoiceForm = document.getElementById('createInvoiceForm');
 const invClientIdSelect = document.getElementById('invClientId');
 const invAmountInput = document.getElementById('invAmount');
@@ -51,6 +52,9 @@ const btnAttackApi = document.getElementById('btnAttackApi');
 const btnAttackPdf = document.getElementById('btnAttackPdf');
 const consoleLogs = document.getElementById('consoleLogs');
 
+const stripeWebhookEmulatorCard = document.getElementById('stripeWebhookEmulatorCard');
+const webhookItemApex = document.getElementById('webhookItemApex');
+const webhookItemBeta = document.getElementById('webhookItemBeta');
 const btnSimulateWebhookApex = document.getElementById('btnSimulateWebhookApex');
 const btnSimulateWebhookBeta = document.getElementById('btnSimulateWebhookBeta');
 
@@ -313,9 +317,23 @@ function updateAuthenticationUI() {
     if (activeClient.role === 'admin') {
       securityBadgeText.textContent = 'SECURE SESSION: ADMINISTRATOR';
       adminPanelCard.classList.remove('hidden');
+      if (webhookAuditingCard) webhookAuditingCard.classList.remove('hidden');
+      if (stripeWebhookEmulatorCard) stripeWebhookEmulatorCard.classList.add('hidden');
     } else {
       securityBadgeText.textContent = `SECURE SESSION: CLIENT ${activeClient.id === '123' ? 'A' : 'B'}`;
       adminPanelCard.classList.add('hidden');
+      if (webhookAuditingCard) webhookAuditingCard.classList.add('hidden');
+      
+      if (stripeWebhookEmulatorCard) {
+        stripeWebhookEmulatorCard.classList.remove('hidden');
+        if (activeClient.id === '123') {
+          if (webhookItemApex) webhookItemApex.classList.remove('hidden');
+          if (webhookItemBeta) webhookItemBeta.classList.add('hidden');
+        } else {
+          if (webhookItemApex) webhookItemApex.classList.add('hidden');
+          if (webhookItemBeta) webhookItemBeta.classList.remove('hidden');
+        }
+      }
     }
     const dot = securityBadge.querySelector('.badge-dot');
     dot.className = 'badge-dot pulse-green';
@@ -337,6 +355,8 @@ function updateAuthenticationUI() {
     loginAdminBtn.classList.remove('active');
     sessionInfoBlock.classList.add('hidden');
     adminPanelCard.classList.add('hidden');
+    if (webhookAuditingCard) webhookAuditingCard.classList.add('hidden');
+    if (stripeWebhookEmulatorCard) stripeWebhookEmulatorCard.classList.add('hidden');
     
     securityBadge.className = 'security-badge';
     securityBadgeText.textContent = 'UNAUTHENTICATED';
