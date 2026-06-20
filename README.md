@@ -10,6 +10,26 @@ This repository contains both the **Express.js API Backend** and a **Vanilla JS/
 ## Live link - https://vault-pay-financial-core-ruby.vercel.app/
 ## 🔒 Demonstration Credentials
 
+##To check in postman use this link - https://vaultpay-financial-core-o8j0.onrender.com/
+** In postman 
+### 🔐 Authentication (`/api/auth`)
+* `POST /login` - Establish identity. Requires `{ email, password }`. Returns JWT token and user profile.
+* `GET /me` - Validate active token. Requires `Authorization: Bearer <token>`.
+
+### 🧾 Invoices (`/api/invoices`)
+* `GET /` - Retrieve ledger statements. 
+  - *Clients* only receive their own invoices.
+  - *Admins* receive all system invoices.
+  - Requires `Authorization: Bearer <token>`.
+* `POST /` - Add a new invoice. Requires `{ clientId, amount, description, stripeInvoiceId }`.
+  - Restricted to `admin` roles only.
+* `GET /:id` - Retrieve specific invoice payload. Requires ownership match or admin role.
+* `GET /:id/pdf` - Securely compiles and downloads a cryptographic PDF statement.
+
+### 🔌 Webhooks (`/api/webhooks`)
+* `POST /stripe` - Ingestion engine for Stripe signature checks. Automatically maps unpaid invoices to `paid` status upon verification.
+
+
 To run audits, simulate attacks, or test invoicing features, you can log in using any of the following pre-configured user credentials. These roles grant different access privileges within the zero-trust system:
 
 | Role | Client Name / Identity | Email (Security Identity) | Password (Authorization Key) | Client ID |
@@ -68,22 +88,3 @@ Once running, the backend will display:
 The backend serves the frontend statically, so everything runs under a single port.
 
 ---
-
-## 📡 API Endpoints
-
-### 🔐 Authentication (`/api/auth`)
-* `POST /login` - Establish identity. Requires `{ email, password }`. Returns JWT token and user profile.
-* `GET /me` - Validate active token. Requires `Authorization: Bearer <token>`.
-
-### 🧾 Invoices (`/api/invoices`)
-* `GET /` - Retrieve ledger statements. 
-  - *Clients* only receive their own invoices.
-  - *Admins* receive all system invoices.
-  - Requires `Authorization: Bearer <token>`.
-* `POST /` - Add a new invoice. Requires `{ clientId, amount, description, stripeInvoiceId }`.
-  - Restricted to `admin` roles only.
-* `GET /:id` - Retrieve specific invoice payload. Requires ownership match or admin role.
-* `GET /:id/pdf` - Securely compiles and downloads a cryptographic PDF statement.
-
-### 🔌 Webhooks (`/api/webhooks`)
-* `POST /stripe` - Ingestion engine for Stripe signature checks. Automatically maps unpaid invoices to `paid` status upon verification.
