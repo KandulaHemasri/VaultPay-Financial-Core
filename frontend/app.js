@@ -3,7 +3,7 @@
 // Change this to your deployed Render backend URL when deploying to Vercel
 const API_BASE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
   ? 'http://localhost:3000'
-  : 'https://YOUR_RENDER_BACKEND_URL.onrender.com'; // <-- Put your Render URL here
+  : 'https://vaultpay-financial-core-o8j0.onrender.com'; 
 
 // Session State
 let token = sessionStorage.getItem('vaultpay_jwt') || null;
