@@ -9,6 +9,18 @@ const API_BASE = window.location.hostname === 'localhost' || window.location.hos
 let token = sessionStorage.getItem('vaultpay_jwt') || null;
 let activeClient = JSON.parse(sessionStorage.getItem('vaultpay_client')) || null;
 
+function populateIdorDropdown(invoices) {
+  if (!idorInvoiceIdSelect || !invoices) return;
+  idorInvoiceIdSelect.innerHTML = '';
+  invoices.forEach(inv => {
+    const clientName = inv.clientId === '123' ? 'Client A' : (inv.clientId === '456' ? 'Client B' : `Client ${inv.clientId}`);
+    const opt = document.createElement('option');
+    opt.value = inv.id;
+    opt.textContent = `${inv.id} (Belongs to ${clientName})`;
+    idorInvoiceIdSelect.appendChild(opt);
+  });
+}
+
 // DOM Elements
 const loginPage = document.getElementById('loginPage');
 const dashboardApp = document.getElementById('dashboardApp');
@@ -334,6 +346,7 @@ function updateAuthenticationUI() {
     invoicesPlaceholder.classList.remove('hidden');
     invoicesList.classList.add('hidden');
     invoicesList.innerHTML = '';
+    if (idorInvoiceIdSelect) idorInvoiceIdSelect.innerHTML = '';
   }
 }
 
@@ -366,6 +379,7 @@ function renderInvoicesList(invoices) {
   
   if (invoices.length === 0) {
     invoicesList.innerHTML = '<div class="log-placeholder">No active invoices found in this account ledger.</div>';
+    populateIdorDropdown([]);
     return;
   }
 
@@ -385,7 +399,7 @@ function renderInvoicesList(invoices) {
           </button>
         `;
       } else {
-        buttonsHtml = ''; // Just show status unpaid, don't show pay and download button
+        buttonsHtml = '';
       }
     } else {
       if (isPaid) {
@@ -424,6 +438,8 @@ function renderInvoicesList(invoices) {
     `;
     invoicesList.appendChild(card);
   });
+
+  populateIdorDropdown(invoices);
 }
 
 // Webhook Logs Fetching & Simulator Logic
