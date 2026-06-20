@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VaultPay Financial Core - Zero-Trust Dashboard</title>
+  <!-- Google Fonts Outfit & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="glow-bg"></div>
+
+  <!-- Secure Login Screen -->
+  <div class="login-container" id="loginPage">
+    <div class="login-card glass-card">
+      <div class="login-logo-wrapper">
+        <span class="logo-accent">VaultPay</span> Financial Core
+      </div>
+      <h2 class="login-title">Zero-Trust Access Gateway</h2>
+      <p class="login-desc">Please authenticate to establish a cryptographically secured session.</p>
+
+      <form id="loginForm" class="login-form">
+        <div class="form-group">
+          <label for="loginEmail">Security Identity (Email)</label>
+          <input type="email" id="loginEmail" class="text-input" placeholder="e.g. apex@corp.com" required autocomplete="username" />
+        </div>
+        <div class="form-group">
+          <label for="loginPassword">Authorization Key (Password)</label>
+          <input type="password" id="loginPassword" class="text-input" placeholder="••••••••" required autocomplete="current-password" />
+        </div>
+        <button type="submit" class="btn btn-cyan full-width">&#x26A1; Access System</button>
+      </form>
+
+      <div class="login-divider">
+        <span>OR SELECT A DEV IDENTITY PRESET</span>
+      </div>
+
+      <div class="presets-grid">
+        <button id="loginClientA" class="preset-card">
+          <span class="preset-icon">&#x1F3E2;</span>
+          <div class="preset-details">
+            <span class="preset-name">Client A (Apex Corp)</span>
+            <span class="preset-sub">apex@corp.com</span>
+          </div>
+        </button>
+        <button id="loginClientB" class="preset-card">
+          <span class="preset-icon">&#x26A1;</span>
+          <div class="preset-details">
+            <span class="preset-name">Client B (Beta Solutions)</span>
+            <span class="preset-sub">beta@solutions.com</span>
+          </div>
+        </button>
+        <button id="loginAdmin" class="preset-card">
+          <span class="preset-icon">&#x1F6E1;&#xFE0F;</span>
+          <div class="preset-details">
+            <span class="preset-name">System Administrator</span>
+            <span class="preset-sub">admin@vaultpay.io</span>
+          </div>
+        </button>
+      </div>
+    </div>
+  </div>
+  
+  <div class="container hidden" id="dashboardApp">
+    <!-- Header -->
+    <header class="main-header">
+      <div class="logo">
+        <span class="logo-accent">VaultPay</span> Financial Core
+      </div>
+      <div class="security-badge" id="securityBadge">
+        <span class="badge-dot pulse-red"></span>
+        <span class="badge-text" id="securityBadgeText">UNAUTHENTICATED</span>
+      </div>
+    </header>
+
+    <!-- Main Grid Dashboard -->
+    <div class="dashboard-grid">
+      
+      <!-- LEFT SECTION: Controls & Attack Simulators -->
+      <section class="control-panel">
+        
+        <!-- Client Identity Selector -->
+        <div class="card glass-card">
+          <h2 class="card-title">1. Active Session Control</h2>
+          <p class="card-desc">Current cryptographic credentials and session details.</p>
+
+          <div class="session-info" id="sessionInfoBlock">
+            <div class="session-row">
+              <span class="info-label">Active Account:</span>
+              <span class="info-val font-highlight" id="activeClientName">-</span>
+            </div>
+            <div class="session-row">
+              <span class="info-label">Role / ID:</span>
+              <span class="info-val" id="activeClientId">-</span>
+            </div>
+            <div class="session-row token-row">
+              <span class="info-label">Bearer Token:</span>
+              <code class="info-val token-code" id="activeClientToken">-</code>
+            </div>
+            <button id="logoutBtn" class="btn btn-danger btn-sm">Clear Session</button>
+          </div>
+        </div>
+
+        <!-- Admin Operations Panel (Hidden for clients) -->
+        <div class="card glass-card hidden" id="adminPanelCard">
+          <h2 class="card-title text-violet">Admin Operations Panel</h2>
+          <p class="card-desc">Create ledger-backed invoices for registered clients.</p>
+          <form id="createInvoiceForm" class="admin-form">
+            <div class="form-group">
+              <label for="invClientId">Target Client:</label>
+              <select id="invClientId" class="select-input">
+                <option value="123">Client A (Apex Corp)</option>
+                <option value="456">Client B (Beta Solutions)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="invAmount">Amount (USD):</label>
+              <input type="number" id="invAmount" class="text-input" placeholder="e.g. 2500" required step="0.01" />
+            </div>
+            <div class="form-group">
+              <label for="invDescription">Description:</label>
+              <input type="text" id="invDescription" class="text-input" placeholder="Enterprise Consultancy Services" required />
+            </div>
+            <div class="form-group">
+              <label for="invStripeId">Stripe Link ID:</label>
+              <input type="text" id="invStripeId" class="text-input" placeholder="in_stripe_apex_03" required />
+            </div>
+            <button type="submit" class="btn btn-cyan full-width">&#x26A1; Create Invoice</button>
+          </form>
+        </div>
+
+        <!-- IDOR Penetration Testing Console -->
+        <div class="card glass-card">
+          <h2 class="card-title text-warning">2. Zero-Trust IDOR Attack Simulator</h2>
+          <p class="card-desc">Test server security by attempting to retrieve records belonging to another client directly by ID.</p>
+          
+          <div class="idor-actions">
+            <div class="idor-target-selector">
+              <label for="idorInvoiceId">Target Invoice ID:</label>
+              <select id="idorInvoiceId" class="select-input">
+                <option value="inv_903">inv_903 (Belongs to Client B)</option>
+                <option value="inv_904">inv_904 (Belongs to Client B)</option>
+                <option value="inv_901">inv_901 (Belongs to Client A)</option>
+                <option value="inv_902">inv_902 (Belongs to Client A)</option>
+              </select>
+            </div>
+            
+            <div class="btn-group-row">
+              <button id="btnAttackApi" class="btn btn-warning full-width">
+                &#x1F6A8; Attempt GET Request
+              </button>
+              <button id="btnAttackPdf" class="btn btn-warning-outline full-width">
+                &#x1F4C4; Attempt PDF Download
+              </button>
+            </div>
+          </div>
+
+          <!-- Console Screen Output -->
+          <div class="console-box">
+            <div class="console-header">
+              <span class="console-dot red"></span>
+              <span class="console-dot yellow"></span>
+              <span class="console-dot green"></span>
+              <span class="console-title">Security Firewall Logs</span>
+            </div>
+            <pre class="console-body" id="consoleLogs">Ready to audit request packets...</pre>
+          </div>
+        </div>
+
+        <!-- Stripe Webhooks Server simulator -->
+        <div class="card glass-card">
+          <h2 class="card-title text-cyan">3. Stripe Webhook Server Emulator</h2>
+          <p class="card-desc">Simulate a server-to-server webhook event directly to our secure `/api/webhooks/stripe` gateway.</p>
+          
+          <div class="webhook-actions">
+            <div class="webhook-item">
+              <div class="webhook-meta">
+                <span class="webhook-target">Invoice <b>inv_902</b> (Apex Corp)</span>
+                <span class="webhook-val">$4,200.50</span>
+              </div>
+              <button id="btnSimulateWebhookApex" class="btn btn-cyan btn-sm">Simulate Payment Success</button>
+            </div>
+            <div class="webhook-item">
+              <div class="webhook-meta">
+                <span class="webhook-target">Invoice <b>inv_904</b> (Beta Solutions)</span>
+                <span class="webhook-val">$9,800.00</span>
+              </div>
+              <button id="btnSimulateWebhookBeta" class="btn btn-cyan btn-sm">Simulate Payment Success</button>
+            </div>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- RIGHT SECTION: Live Ledger & System Logs -->
+      <section class="data-panel">
+        
+        <!-- Invoices List -->
+        <div class="card glass-card full-height">
+          <div class="card-header-split">
+            <h2 class="card-title">Secured Invoices Ledger</h2>
+            <button id="btnRefreshInvoices" class="btn btn-refresh" title="Reload Invoices">&#x1F504;</button>
+          </div>
+          <p class="card-desc">Dynamic list of invoices. In a Zero-Trust network, these are only loaded if authorized.</p>
+          
+          <div class="invoices-placeholder" id="invoicesPlaceholder">
+            <div class="placeholder-icon">&#x1F512;</div>
+            <p>Authentication Required</p>
+            <span class="placeholder-sub">Log in as a client to unlock and pull records from the secure server.</span>
+          </div>
+
+          <div class="invoices-list hidden" id="invoicesList">
+            <!-- Dynamically populated via JS -->
+          </div>
+        </div>
+
+        <!-- Webhook Event Auditing Stream -->
+        <div class="card glass-card">
+          <div class="card-header-split">
+            <h2 class="card-title text-violet">Live Webhook Auditing Stream</h2>
+            <button id="btnRefreshLogs" class="btn btn-refresh" title="Reload Logs">&#x1F504;</button>
+          </div>
+          <p class="card-desc">Raw server-side logs monitoring inbound Webhook events and status mappings.</p>
+          
+          <div class="webhook-logs-container" id="webhookLogsList">
+            <div class="log-placeholder">No inbound webhook payloads recorded.</div>
+          </div>
+        </div>
+
+      </section>
+
+    </div>
+  </div>
+
+  <!-- Stripe Checkout Modal Simulator -->
+  <div class="modal-overlay hidden" id="checkoutModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div class="modal-stripe-logo">stripe</div>
+        <button class="modal-close" id="btnCancelPayment">&#x2715;</button>
+      </div>
+      <div class="modal-body">
+        <div class="checkout-product-details">
+          <span class="checkout-merchant">Nexus Corporate Billing</span>
+          <span class="checkout-desc" id="checkoutDesc">-</span>
+          <div class="checkout-amount" id="checkoutAmount">$0.00</div>
+        </div>
+        <form id="stripePaymentForm" class="stripe-form">
+          <div class="form-group">
+            <label for="cardEmail">Client Email</label>
+            <input type="email" id="cardEmail" class="text-input" disabled />
+          </div>
+          <div class="form-group card-element-group">
+            <label>Card Information</label>
+            <div class="card-input-container">
+              <input type="text" id="cardNumber" class="card-field" placeholder="4242 4242 4242 4242" required maxlength="19" />
+              <div class="card-sub-fields">
+                <input type="text" id="cardExpiry" class="card-field-sm" placeholder="MM/YY" required maxlength="5" />
+                <input type="text" id="cardCvc" class="card-field-sm" placeholder="CVC" required maxlength="3" />
+              </div>
+            </div>
+            <span class="card-tip">Use Stripe test card: enter 4242 repeatedly.</span>
+          </div>
+          <button type="submit" class="btn btn-stripe full-width" id="btnSubmitStripePayment">
+            <span id="btnStripeText">Pay $0.00</span>
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
